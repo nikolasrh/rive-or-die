@@ -7,7 +7,7 @@ const dropzoneInput = document.querySelector<HTMLInputElement>('#dropzone-input'
 let inputX = 0
 let inputY = 0
 
-dropzone.onclick = (event) => {
+dropzone.ondblclick = (event) => {
   event.stopImmediatePropagation();
   inputX = event.clientX
   inputY = event.clientY
