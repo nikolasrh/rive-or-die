@@ -17,26 +17,19 @@ html, body, #dropzone {
   cursor: help
 }
 
-#dropzone {
-  color: turquoise;
-}
-
-#dropzone-text-container {
+#logo-container {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
 }
 
-#dropzone-text {
+#logo {
   z-index: 1;
 }
 
-.no-select {
-  user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  -webkit-user-select: none;
+#dropzone-input {
+  display: none;
 }
 
 .rive-canvas {

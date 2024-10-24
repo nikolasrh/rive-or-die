@@ -2,17 +2,34 @@ import './style.css'
 import { Rive } from '@rive-app/canvas';
 
 const dropzone = document.querySelector<HTMLDivElement>('#dropzone')!
+const dropzoneInput = document.querySelector<HTMLInputElement>('#dropzone-input')!
+
+let inputX = 0
+let inputY = 0
+
+dropzone.onclick = (event) => {
+  event.stopImmediatePropagation();
+  inputX = event.clientX
+  inputY = event.clientY
+  console.log(inputX, inputY)
+  dropzoneInput.click()
+}
+
+dropzoneInput.onchange = () => {
+  uploadFiles(dropzoneInput.files, inputX, inputY)
+}
 
 dropzone.ondragover = (event) => { event.preventDefault() }
 
-dropzone.ondrop  = (event: DragEvent) => {
+dropzone.ondrop = (event) => {
   event.preventDefault()
   event.stopPropagation()
+  uploadFiles(event.dataTransfer?.files, event.clientX, event.clientY)
+}
 
-  const files = event.dataTransfer?.files || []
-
-  Array.from(files)
-      .map(file => fileToRive(file, event.clientX, event.clientY))
+const uploadFiles = (files: FileList | undefined | null, x: number, y: number) => {
+  Array.from(files || [])
+      .map(file => fileToRive(file, x, y))
       .forEach(newElement => dropzone.appendChild(newElement))
 }
 
