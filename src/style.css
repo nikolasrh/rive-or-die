@@ -8,7 +8,9 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-html, body, #dropzone {
+html,
+body,
+#dropzone {
   margin: 0;
   padding: 0;
   height: 100vh;
@@ -30,8 +32,4 @@ html, body, #dropzone {
 
 #dropzone-input {
   display: none;
-}
-
-.rive-canvas {
-  cursor: move;
 }

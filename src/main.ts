@@ -1,5 +1,5 @@
 import './style.css'
-import { Rive } from '@rive-app/canvas'
+import { createRiveElement } from './create-rive-element'
 
 const dropzone = document.querySelector<HTMLDivElement>('#dropzone')!
 const dropzoneInput = document.querySelector<HTMLInputElement>('#dropzone-input')!
@@ -29,26 +29,15 @@ dropzone.ondrop = (event) => {
 
 const uploadFiles = (files: FileList | undefined | null, x: number, y: number) => {
   Array.from(files || [])
-      .map(file => fileToRive(file, x, y))
-      .forEach(newElement => dropzone.appendChild(newElement))
+    .map(file => createRiveElement(file, x, y))
+    .forEach(newElement => {
+      // Remove element on double click
+      newElement.ondblclick = event => {
+        event.stopPropagation()
+        dropzone.removeChild(newElement)
+      }
+
+      dropzone.appendChild(newElement)
+    })
 }
 
-const fileToRive = (file: File, x: number, y: number): HTMLCanvasElement => {
-  const canvas = document.createElement('canvas')
-  canvas.className = 'rive-canvas'
-  canvas.style.position = 'absolute'
-  canvas.style.left = `${x}px`
-  canvas.style.top = `${y}px`
-  canvas.style.transform = 'translate(-50%, -50%)'
-
-  const r = new Rive({
-    src: URL.createObjectURL(file),
-    canvas,
-    autoplay: true,
-    onLoad: () => {
-      r.resizeDrawingSurfaceToCanvas()
-    },
-  })
-
-  return canvas
-}
