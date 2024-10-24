@@ -1,20 +1,37 @@
 import './style.css'
-import logo from '/rive_or_die_logo.svg'
-import { setupCounter } from './counter.ts'
+import { Rive } from '@rive-app/canvas';
 
-document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
-  <div>
-    <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank">
-      <img src="${logo}" class="logo" alt="Logo" />
-    </a>
-    <h1>Vite + TypeScript</h1>
-    <div class="card">
-      <button id="counter" type="button"></button>
-    </div>
-    <p class="read-the-docs">
-      Click on the Vite and TypeScript logos to learn more
-    </p>
-  </div>
-`
+const dropzone = document.querySelector<HTMLDivElement>('#dropzone')!
 
-setupCounter(document.querySelector<HTMLButtonElement>('#counter')!)
+dropzone.ondragover = (event) => { event.preventDefault() }
+
+dropzone.ondrop  = (event: DragEvent) => {
+  event.preventDefault()
+  event.stopPropagation()
+
+  const files = event.dataTransfer?.files || []
+
+  Array.from(files)
+      .map(file => fileToRive(file, event.clientX, event.clientY))
+      .forEach(newElement => dropzone.appendChild(newElement))
+}
+
+const fileToRive = (file: File, x: number, y: number): HTMLCanvasElement => {
+  const canvas = document.createElement('canvas')
+  canvas.className = 'rive-canvas'
+  canvas.style.position = 'absolute'
+  canvas.style.left = `${x}px`
+  canvas.style.top = `${y}px`
+  canvas.style.transform = 'translate(-50%, -50%)'
+
+  const r = new Rive({
+    src: URL.createObjectURL(file),
+    canvas,
+    autoplay: true,
+    onLoad: () => {
+      r.resizeDrawingSurfaceToCanvas();
+    },
+  });
+
+  return canvas
+}
