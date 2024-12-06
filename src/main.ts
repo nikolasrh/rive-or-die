@@ -1,6 +1,6 @@
 import "./style.css";
-import { createRiveElement } from "./create-rive-element";
-import { supabase } from "./supabase";
+//import { createRiveElement } from "./create-rive-element";
+import supabaseClient from "./supabase/client";
 
 const dropzone = document.querySelector<HTMLDivElement>("#dropzone")!;
 const dropzoneInput =
@@ -34,10 +34,13 @@ const uploadFiles = (
   x: number,
   y: number
 ) => {
-  Array.from(files || []).forEach(async (newElement) => {
-    const { error } = await supabase
+  Array.from(files || []).forEach(async (file) => {
+    const arrayBuffer = await file.arrayBuffer();
+    const data = new Uint8Array(arrayBuffer);
+    console.log(data);
+    const { error } = await supabaseClient
       .from("animations")
-      .insert({ pos_x: x, pos_y: y, data: newElement });
+      .insert({ pos_x: x, pos_y: y, data });
 
     if (error) {
       console.error("Error uploading new animation!");
