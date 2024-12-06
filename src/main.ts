@@ -1,6 +1,6 @@
+import { createRiveElement } from "./create-rive-element";
 import "./style.css";
-//import { createRiveElement } from "./create-rive-element";
-import supabaseClient from "./supabase/client";
+import { onAnimation, supabaseClient } from "./supabase/client";
 
 const dropzone = document.querySelector<HTMLDivElement>("#dropzone")!;
 const dropzoneInput =
@@ -36,28 +36,29 @@ const uploadFiles = (
 ) => {
   Array.from(files || []).forEach(async (file) => {
     const arrayBuffer = await file.arrayBuffer();
-    const data = new Uint8Array(arrayBuffer);
-    console.log(data);
-    const { error } = await supabaseClient
+    const data = new Uint8Array(arrayBuffer);    const { error } = await supabaseClient
       .from("animations")
       .insert({ pos_x: x, pos_y: y, data });
-
     if (error) {
       console.error("Error uploading new animation!");
     }
   });
 };
 
-// Remove element on double click
-/*
+onAnimation(payload => {
+  console.log('onAnimation')
+  console.log(payload)
+  return;
+
+  const file = new File(payload.new.data, payload.new.id) //, 'animation.riv', { type: 'application/octet-stream' });
+
+  const newElement = createRiveElement(payload.new.data, payload.new.pos_x, payload.new.pos_y)
+
+  // Remove element on double click
   newElement.ondblclick = (event) => {
     event.stopPropagation();
     dropzone.removeChild(newElement);
   };
 
-      .map((file) => createRiveElement(file, x, y))
-
-  if (data) {
-    console.log(data);
-    dropzone.appendChild(newElement);
-  }*/
+  dropzone.appendChild(newElement); 
+})
